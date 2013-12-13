@@ -1,0 +1,36 @@
+##############################################################################
+#                        ConRiot Copyright (c) 2013                          #
+#           This plugin has been specially developed for ConRiot.            #
+#    It may not be distributed or used by anyone other than the copyright    #
+#    owner. If you got this file from the internet, please send an email     #
+#            with the direct URL to: endain.gaming@gmail.com                 #
+##############################################################################
+
+name: ${project.name}
+version: ${project.version}
+website: http://ConRiot.net
+description: Chat module developed for ConRiot
+author: [Endain]
+main: net.conriot.sona.chat.Chat
+depend: [CRM-MySQL, CRM-Permissions]
+commands:
+  msg:
+    description: Send a private message to a player
+  r:
+    description: Reply to the last person you got a message from
+  block:
+    description: Hide all private and public messages from a player
+  unblock:
+    description: Show all private and public messages from a player
+  mute:
+    description: Mute a player for a given time
+  unmute:
+    description: Unmute a player if they are muted
+  silence:
+    description: Disable all non-op chat
+  unsilence:
+    description: Enable all non-op chat
+  broadcast:
+    description: Announce a message to the server
+  
+  
