@@ -9,9 +9,9 @@ public class Chat extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		// Register the chat manager which will handle all chat
-		this.chat = new ChatManager();
+		this.chat = new ChatManager(this);
 		// Register the message manager which will handle all custom messages
-		this.message = new MessageManager();
+		this.message = new MessageManager(this);
 	}
 	
 	@Override
