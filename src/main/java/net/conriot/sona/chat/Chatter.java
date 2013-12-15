@@ -61,7 +61,7 @@ class Chatter implements IOCallback {
 		
 		// Persist the mute to the database
 		Query q = MySQL.makeQuery();
-		q.setQuery("INSERT ITO chat_mutes VALUES (name=?, finish=?)");
+		q.setQuery("INSERT INTO chat_mutes VALUES (name=?, finish=?)");
 		q.add(this.player.getName());
 		q.add(System.currentTimeMillis() + duration);
 		// Execute query asynchronously
@@ -156,7 +156,7 @@ class Chatter implements IOCallback {
 			return;
 		
 		// Check if the play is outside of the receiving range
-		if(loc.getWorld() != this.player.getLocation().getWorld() || loc.distanceSquared(this.player.getLocation()) > range)
+		if(loc.getWorld() != this.player.getLocation().getWorld() || loc.distanceSquared(this.player.getLocation()) > range * range)
 			return;
 		
 		// Send the message as normal if in range
