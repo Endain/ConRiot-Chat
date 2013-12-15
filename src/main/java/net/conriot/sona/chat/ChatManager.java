@@ -8,6 +8,7 @@ import net.conriot.sona.mysql.MySQL;
 import net.conriot.sona.mysql.Query;
 import net.conriot.sona.mysql.Result;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,9 +26,44 @@ class ChatManager implements Listener, IOCallback {
 		this.plugin = plugin;
 		this.chatters = new HashMap<String, Chatter>();
 		this.silenced = false;
+		
+		// Register all events
+		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+	}
+	
+	public void silence(Player sender) {
+		if(!this.silenced) {
+			// Set the chat to silent mode
+			this.silenced = true;
+			// Notify all that the server is in silent mode
+			this.plugin.sendAll(ColorScheme.RED_DARKRED, "{1}The server is now in {2}silent {1}mode! Chat is {2}disabled{1}!");
+		} else {
+			// Notify the server is already in silent mode
+			this.plugin.send(ColorScheme.RED_DARKRED, "{1}The server is already in {2}silent {1}mode!", sender);
+		}
+	}
+	
+	public void unsilence(Player sender) {
+		if(this.silenced) {
+			// Set the chat to no longer be in silent mode
+			this.silenced = true;
+			// Notify all that the server is no longer in silent mode
+			this.plugin.sendAll(ColorScheme.GREEN_DARKGREEN, "{1}The server is no longer in {2}silent {1}mode! Chat is {2}enabled{1}!");
+		} else {
+			// Notify the server is already out of silent mode
+			this.plugin.send(ColorScheme.RED_DARKRED, "{1}The server is already out of {2}silent {1}mode!", sender);
+		}
 	}
 	
 	public boolean mute(String target, long duration) {
+		// Check if the player named is online
+		Player player = Bukkit.getPlayer(target);
+		if(player == null)
+			return false;
+		
+		// Get the exact player name for the target
+		target = player.getName();
+		
 		// Perform the channel set if the chatter is not null
 		Chatter chatter = this.chatters.get(target);
 		if(chatter != null)
@@ -39,6 +75,11 @@ class ChatManager implements Listener, IOCallback {
 	}
 	
 	public boolean unmute(String target) {
+		// Try to get the exact name of the target if online
+		Player player = Bukkit.getPlayer(target);
+		if(player != null)
+			target = player.getName();
+		
 		// Perform the channel set if the chatter is not null
 		Chatter chatter = this.chatters.get(target);
 		if(chatter != null)
@@ -49,7 +90,45 @@ class ChatManager implements Listener, IOCallback {
 		return true;
 	}
 	
+	public void block(Player sender, String target) {
+		// Perform the channel set if the chatter is not null
+		Chatter chatter = this.chatters.get(sender.getName());
+		if(chatter != null) {
+			// Check if the player named is online
+			Player player = Bukkit.getPlayer(target);
+			if(player != null) {
+				// Block theme is they were online
+				chatter.block(player.getName());
+			} else {
+				// Notify that nobody by that name is online
+				this.plugin.send(ColorScheme.RED_DARKRED, "{1}There is nobody online named '{2}" + target + "{1}'!", sender);
+			}
+		}
+		
+	}
+	
+	public void unblock(Player sender, String target) {
+		// Perform the channel set if the chatter is not null
+		Chatter chatter = this.chatters.get(sender.getName());
+		if(chatter != null) {
+			// Check is the player named is online
+			Player player = Bukkit.getPlayer(target);
+			if(player != null) {
+				// Try to unblock using their full name
+				chatter.unblock(player.getName());
+			} else {
+				// Try to unblock using the raw input
+				chatter.unblock(target);
+			}
+		}
+	}
+	
 	public void message(Player sender, String message, String target) {
+		// Try to get the exact name of the target if online
+		Player player = Bukkit.getPlayer(target);
+		if(player != null)
+			target = player.getName();
+		
 		// Perform the channel set if the chatter is not null
 		Chatter to = this.chatters.get(target);
 		if(to != null) {

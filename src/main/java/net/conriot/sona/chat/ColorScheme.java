@@ -3,13 +3,18 @@ package net.conriot.sona.chat;
 import org.bukkit.ChatColor;
 
 public enum ColorScheme {
+	// White only
+	NONE(null, null, null),
+	// Two-tone schemes
 	RED_DARKRED(ChatColor.RED, ChatColor.DARK_RED, null),
 	GREEN_DARKGREEN(ChatColor.GREEN, ChatColor.DARK_GREEN, null),
 	BLUE_DARBLUE(ChatColor.BLUE, ChatColor.DARK_BLUE, null),
 	AQUA_DARKAQUA(ChatColor.AQUA, ChatColor.DARK_AQUA, null),
 	PURLE_DARKPURPLE(ChatColor.LIGHT_PURPLE, ChatColor.DARK_PURPLE, null),
 	YELLOW_GOLD(ChatColor.YELLOW, ChatColor.GOLD, null),
-	GRAY_DARKDRAY(ChatColor.GRAY, ChatColor.DARK_GRAY, null);
+	GRAY_DARKDRAY(ChatColor.GRAY, ChatColor.DARK_GRAY, null),
+	// Three color schemes
+	GRAY_WHITE_AQUA(ChatColor.GRAY, ChatColor.WHITE, ChatColor.AQUA);
 
 	private ChatColor primary;
 	private ChatColor secondary;

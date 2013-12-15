@@ -13,11 +13,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
 class Chatter implements IOCallback {
-	private Plugin plugin;
+	private Chat plugin;
 	private Player player;
 	@Getter private boolean loaded;
 	@Getter private boolean muted;
@@ -27,7 +26,7 @@ class Chatter implements IOCallback {
 	private HashSet<String> channels;
 	private HashSet<String> blocked;
 	
-	public Chatter(Plugin plugin, Player player) {
+	public Chatter(Chat plugin, Player player) {
 		this.plugin = plugin;
 		this.player = player;
 		this.loaded = false;
@@ -66,6 +65,9 @@ class Chatter implements IOCallback {
 		q.add(System.currentTimeMillis() + duration);
 		// Execute query asynchronously
 		MySQL.execute(this, "mute", q);
+		
+		// Notify the player they have been muted
+		this.plugin.send(ColorScheme.RED_DARKRED, "{1}You have been muted for {2}" + (duration / 60000) + "{1} minutes!", this.player);
 	}
 	
 	public void unmute() {
@@ -83,27 +85,85 @@ class Chatter implements IOCallback {
 		q.add(this.player.getName());
 		// Execute query asynchronously
 		MySQL.execute(this, "unmute", q);
+		
+		// Notify the player they have been muted
+		this.plugin.send(ColorScheme.GREEN_DARKGREEN, "{1}You have been unmuted!", this.player);
+	}
+	
+	public void block(String name) {
+		// Convert to lowercase
+		String lower = name.toLowerCase();
+		
+		// Check if the player is already blocked or not
+		if(this.blocked.contains(lower)) {
+			// Notify that they are already blocked
+			this.plugin.send(ColorScheme.RED_DARKRED, "{1}You have already blocked '{2}" + name + "{1}'!", this.player);
+		} else {
+			// Block the player name
+			this.blocked.add(lower);
+			
+			// Persist the data to the database
+			Query q = MySQL.makeQuery();
+			q.setQuery("INSERT INTO chat_blocks VALUES (name=?, blocked=?)");
+			q.add(this.player.getName());
+			q.add(lower);
+			// Execute query asynchronously
+			MySQL.execute(this, "block", q);
+			
+			// Notify that the player is now blocked
+			this.plugin.send(ColorScheme.GRAY_DARKDRAY, "{1}You have blocked '{2}" + name + "{1}'!", this.player);
+		}
+	}
+	
+	public void unblock(String name) {
+		// Convert to lowercase
+		String lower = name.toLowerCase();
+		
+		// Check if the player is already blocked or not
+		if(!this.blocked.contains(lower)) {
+			// Notify that they are not blocked
+			this.plugin.send(ColorScheme.RED_DARKRED, "{1}You have not yet blocked '{2}" + name + "{1}'!", this.player);
+		} else {
+			// Unblock the player name
+			this.blocked.remove(lower);
+			
+			// Persist the data to the database
+			Query q = MySQL.makeQuery();
+			q.setQuery("DELETE FROM chat_blocks WHERE name=?, blocked=?");
+			q.add(this.player.getName());
+			q.add(lower);
+			// Execute query asynchronously
+			MySQL.execute(this, "block", q);
+			
+			// Notify that the player is now unblocked
+			this.plugin.send(ColorScheme.GRAY_DARKDRAY, "{1}You have unblocked '{2}" + name + "{1}'!", this.player);
+		}
 	}
 	
 	public String say(String message) {
 		// check if the player's chat data is loaded yet
 		if(!this.loaded) {
+			// Notify the player they cannot speak yet
+			this.plugin.send(ColorScheme.RED_DARKRED, "{1}You cannot speak at this time, please wait!", this.player);
 			return null;
 		}
 		
 		// Check if the player is muted
 		if(this.muted) {
+			// Notify the player they are currently muted
+			this.plugin.send(ColorScheme.RED_DARKRED, "{1}You have been {2}muted{1} and cannot speak right now!", this.player);
 			return null;
 		}
 		
 		// Check if player sent a message recently
-		if(System.currentTimeMillis() - this.lastSent < 2000) {
+		if(System.currentTimeMillis() - this.lastSent < 2000 && !this.player.isOp()) {
+			// Notify the player they cannot chat that often
+			this.plugin.send(ColorScheme.RED_DARKRED, "{1}You cannot send messages that quickly!", this.player);
 			return null;
 		}
 		
 		// Create a prefix accordingly
-		String prefix = "";
-		// TODO
+		String prefix = buildPrefix();
 		
 		// Update the time of the last message sent
 		this.lastSent = System.currentTimeMillis();
@@ -187,6 +247,23 @@ class Chatter implements IOCallback {
 	public void clearChannel(String channel) {
 		// Remove the user from all channels
 		channels.clear();
+	}
+	
+	private String buildPrefix() {
+		// Build a prefix based on rank
+		String prefix = "";
+		
+		// Check if the play is op
+		if(this.player.isOp()) {
+			prefix = ChatColor.DARK_GRAY + "[ " + ChatColor.DARK_RED + ChatColor.BOLD + "Owner" + ChatColor.DARK_GRAY + " ] ";
+			prefix += ChatColor.DARK_RED + this.player.getName() + ChatColor.DARK_GRAY + " : " + ChatColor.RED;
+		} else {
+			prefix = ChatColor.GRAY + "[ " + ChatColor.BLUE + "Inmate" + ChatColor.GRAY + " ] ";
+			prefix += ChatColor.YELLOW + this.player.getName() + ChatColor.DARK_GRAY + " : " + ChatColor.GRAY;
+		}
+		
+		// Return the prefix
+		return prefix;
 	}
 	
 	private void load() {
