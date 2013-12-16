@@ -137,6 +137,11 @@ class ChatManager implements Listener, IOCallback {
 			
 			// Send the private message
 			to.message(sender, message);
+			
+			// Update the lastPM value of the sender
+			Chatter from = this.chatters.get(sender.getName());
+			if(from != null && player != null)
+				from.setLastPM(player);
 		} else {
 			// Notify that the target of the message is offline
 			this.plugin.send(ColorScheme.RED_DARKRED, "{1}The player '{2}" + target + "{1}' is not online!", sender);

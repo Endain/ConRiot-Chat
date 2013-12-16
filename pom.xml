@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.conriot.sona</groupId>
   <artifactId>CRM-Chat</artifactId>
-  <version>0.0.1-INDEV</version>
+  <version>0.0.1-ALPHA</version>
   <name>CRM-Chat</name>
     
   <repositories>

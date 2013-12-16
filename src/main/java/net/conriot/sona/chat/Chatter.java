@@ -3,6 +3,7 @@ package net.conriot.sona.chat;
 import java.util.HashSet;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import net.conriot.sona.mysql.IOCallback;
 import net.conriot.sona.mysql.MySQL;
@@ -21,7 +22,7 @@ class Chatter implements IOCallback {
 	@Getter private boolean loaded;
 	@Getter private boolean muted;
 	private BukkitTask unmute;
-	@Getter private Player lastPM;
+	@Getter @Setter private Player lastPM;
 	private long lastSent;
 	private HashSet<String> channels;
 	private HashSet<String> blocked;
@@ -106,7 +107,7 @@ class Chatter implements IOCallback {
 			
 			// Persist the data to the database
 			Query q = MySQL.makeQuery();
-			q.setQuery("INSERT INTO chat_blocks (chat_mutes.name, chat_mutes.blocked) VALUES (?, ?)");
+			q.setQuery("INSERT INTO chat_blocks (chat_blocks.name, chat_blocks.blocked) VALUES (?, ?)");
 			q.add(this.player.getName());
 			q.add(lower);
 			// Execute query asynchronously
@@ -131,7 +132,7 @@ class Chatter implements IOCallback {
 			
 			// Persist the data to the database
 			Query q = MySQL.makeQuery();
-			q.setQuery("DELETE FROM chat_blocks WHERE chat_blocks.name=?, chat_nlocks.blocked=?");
+			q.setQuery("DELETE FROM chat_blocks WHERE chat_blocks.name=? AND chat_blocks.blocked=?");
 			q.add(this.player.getName());
 			q.add(lower);
 			// Execute query asynchronously
@@ -175,6 +176,12 @@ class Chatter implements IOCallback {
 	}
 	
 	public void message(Player sender, String message) {
+		// Create a prefix for the copy of this message given to the sender
+		String senderprefix = ChatColor.DARK_GRAY + " [ " + ChatColor.GRAY + "You" + ChatColor.DARK_PURPLE + ChatColor.BOLD + " -> " + ChatColor.WHITE + this.player.getName() + ChatColor.DARK_GRAY + " ] ";
+		
+		// Send the copy of the private message to the sender
+		sender.sendMessage(senderprefix + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + message);
+		
 		// Check if the sender is blocked by this player
 		if(this.blocked.contains(sender.getName()))
 			return;
@@ -183,7 +190,7 @@ class Chatter implements IOCallback {
 		this.lastPM = sender;
 		
 		// Create a prefix for this message
-		String prefix = ChatColor.DARK_GRAY + " [ " + ChatColor.GRAY + sender.getName() + ChatColor.DARK_PURPLE + ChatColor.BOLD + " -> " + ChatColor.WHITE + "You" + ChatColor.DARK_GRAY + " ] ";
+		String prefix = ChatColor.DARK_GRAY + " [ " + ChatColor.WHITE + sender.getName() + ChatColor.DARK_PURPLE + ChatColor.BOLD + " -> " + ChatColor.GRAY + "You" + ChatColor.DARK_GRAY + " ] ";
 		
 		// Send the private message to the player
 		this.player.sendMessage(prefix + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + message);
