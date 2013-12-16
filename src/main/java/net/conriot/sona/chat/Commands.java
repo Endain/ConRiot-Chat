@@ -118,7 +118,7 @@ class Commands implements CommandExecutor {
 				message += " " + sub;
 			
 			// Announce the message to everyone
-			this.message.sendAll(ColorScheme.NONE, "{1}*{2}*{3}" + ChatColor.BOLD + message + " {2}*{1}*");
+			this.message.sendAll(ColorScheme.GRAY_WHITE_AQUA, "{1}*{2}*{3}" + ChatColor.BOLD + message + " {2}*{1}*");
 		}
 	}
 	
