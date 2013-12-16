@@ -46,7 +46,7 @@ class ChatManager implements Listener, IOCallback {
 	public void unsilence(Player sender) {
 		if(this.silenced) {
 			// Set the chat to no longer be in silent mode
-			this.silenced = true;
+			this.silenced = false;
 			// Notify all that the server is no longer in silent mode
 			this.plugin.sendAll(ColorScheme.GREEN_DARKGREEN, "{1}The server is no longer in {2}silent {1}mode! Chat is {2}enabled{1}!");
 		} else {
@@ -172,7 +172,7 @@ class ChatManager implements Listener, IOCallback {
 		if(chatter != null) {
 			// Verify that the chat is not currently silenced
 			if(!sender.isOp() && this.silenced) {
-				this.plugin.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You cannot talk right now!", sender);
+				this.plugin.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You can't talk right now!", sender);
 				return;
 			}
 			
@@ -201,7 +201,7 @@ class ChatManager implements Listener, IOCallback {
 		if(chatter != null) {
 			// Verify that the chat is not currently silenced
 			if(!sender.isOp() && this.silenced) {
-				this.plugin.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You cannot talk right now!", sender);
+				this.plugin.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You can't talk right now!", sender);
 				return;
 			}
 			
@@ -258,7 +258,7 @@ class ChatManager implements Listener, IOCallback {
 		if(chatter != null) {
 			// Verify that the chat is not currently silenced
 			if(!player.isOp() && this.silenced) {
-				this.plugin.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You cannot talk right now!", player);
+				this.plugin.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You can't talk right now!", player);
 				return;
 			}
 			
@@ -284,7 +284,7 @@ class ChatManager implements Listener, IOCallback {
 	private void log(String from, String to, String message) {
 		// Log the given message to the chat log
 		Query q = MySQL.makeQuery();
-		q.setQuery("INSERT INTO chat_log VALUES (time=?, to=?, from=? message=?)");
+		q.setQuery("INSERT INTO chat_log (chat_log.time, chat_log.from, chat_log.to, chat_log.message) VALUES (?, ?, ?, ?)");
 		q.add(System.currentTimeMillis());
 		q.add(from);
 		q.add(to);

@@ -37,6 +37,8 @@ class Chatter implements IOCallback {
 		this.channels = new HashSet<String>();
 		this.blocked = new HashSet<String>();
 		
+		Bukkit.getLogger().info(player.getName() + " was added as a Chatter!"); // DEBUG
+		
 		// Load persisted player chat data
 		load();
 	}
@@ -60,7 +62,7 @@ class Chatter implements IOCallback {
 		
 		// Persist the mute to the database
 		Query q = MySQL.makeQuery();
-		q.setQuery("INSERT INTO chat_mutes VALUES (name=?, finish=?)");
+		q.setQuery("INSERT INTO chat_mutes (chat_mutes.name, chat_mutes.finish) VALUES (?, ?)");
 		q.add(this.player.getName());
 		q.add(System.currentTimeMillis() + duration);
 		// Execute query asynchronously
@@ -81,7 +83,7 @@ class Chatter implements IOCallback {
 		
 		// Update the database accordingly
 		Query q = MySQL.makeQuery();
-		q.setQuery("DELETE FROM chat_mutes WHERE name=?");
+		q.setQuery("DELETE FROM chat_mutes WHERE chat_mutes.name=?");
 		q.add(this.player.getName());
 		// Execute query asynchronously
 		MySQL.execute(this, "unmute", q);
@@ -104,7 +106,7 @@ class Chatter implements IOCallback {
 			
 			// Persist the data to the database
 			Query q = MySQL.makeQuery();
-			q.setQuery("INSERT INTO chat_blocks VALUES (name=?, blocked=?)");
+			q.setQuery("INSERT INTO chat_blocks (chat_mutes.name, chat_mutes.blocked) VALUES (?, ?)");
 			q.add(this.player.getName());
 			q.add(lower);
 			// Execute query asynchronously
@@ -129,7 +131,7 @@ class Chatter implements IOCallback {
 			
 			// Persist the data to the database
 			Query q = MySQL.makeQuery();
-			q.setQuery("DELETE FROM chat_blocks WHERE name=?, blocked=?");
+			q.setQuery("DELETE FROM chat_blocks WHERE chat_blocks.name=?, chat_nlocks.blocked=?");
 			q.add(this.player.getName());
 			q.add(lower);
 			// Execute query asynchronously
@@ -189,7 +191,7 @@ class Chatter implements IOCallback {
 	
 	public void send(Player sender, String prefix, String message) {
 		// Check if the sender is blocked by this player
-		if(this.blocked.contains(sender.getName()))
+		if(!sender.isOp() && this.blocked.contains(sender.getName()))
 			return;
 				
 		// Send a message with the defined prefix
@@ -198,7 +200,7 @@ class Chatter implements IOCallback {
 	
 	public void sendChannel(Player sender, String prefix, String message, String channel) {
 		// Check if the sender is blocked by this player
-		if(this.blocked.contains(sender.getName()))
+		if(!sender.isOp() && this.blocked.contains(sender.getName()))
 			return;
 				
 		// Check if the user is not in the channel being broadcast to
@@ -212,7 +214,7 @@ class Chatter implements IOCallback {
 	
 	public void sendLocal(Player sender, String prefix, String message, Location loc, double range) {
 		// Check if the sender is blocked by this player
-		if(this.blocked.contains(sender.getName()))
+		if(!sender.isOp() && this.blocked.contains(sender.getName()))
 			return;
 		
 		// Check if the play is outside of the receiving range
@@ -255,10 +257,10 @@ class Chatter implements IOCallback {
 		
 		// Check if the play is op
 		if(this.player.isOp()) {
-			prefix = ChatColor.DARK_GRAY + "[ " + ChatColor.DARK_RED + ChatColor.BOLD + "Owner" + ChatColor.DARK_GRAY + " ] ";
+			prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + ChatColor.BOLD + "Owner" + ChatColor.GRAY + "] ";
 			prefix += ChatColor.DARK_RED + this.player.getName() + ChatColor.DARK_GRAY + " : " + ChatColor.RED;
 		} else {
-			prefix = ChatColor.GRAY + "[ " + ChatColor.BLUE + "Inmate" + ChatColor.GRAY + " ] ";
+			prefix = ChatColor.GRAY + "[" + ChatColor.BLUE + "Inmate" + ChatColor.GRAY + "] ";
 			prefix += ChatColor.YELLOW + this.player.getName() + ChatColor.DARK_GRAY + " : " + ChatColor.GRAY;
 		}
 		
