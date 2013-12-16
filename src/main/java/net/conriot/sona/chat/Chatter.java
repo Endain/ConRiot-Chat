@@ -70,7 +70,7 @@ class Chatter implements IOCallback {
 		MySQL.execute(this, "mute", q);
 		
 		// Notify the player they have been muted
-		this.plugin.send(ColorScheme.RED_DARKRED, "{1}You have been muted for {2}" + (duration / 60000) + "{1} minutes!", this.player);
+		Chat.send(ColorScheme.RED_DARKRED, "{1}You have been muted for {2}" + (duration / 60000) + "{1} minutes!", this.player);
 	}
 	
 	public void unmute() {
@@ -90,7 +90,7 @@ class Chatter implements IOCallback {
 		MySQL.execute(this, "unmute", q);
 		
 		// Notify the player they have been muted
-		this.plugin.send(ColorScheme.GREEN_DARKGREEN, "{1}You have been unmuted!", this.player);
+		Chat.send(ColorScheme.GREEN_DARKGREEN, "{1}You have been unmuted!", this.player);
 	}
 	
 	public void block(String name) {
@@ -100,7 +100,7 @@ class Chatter implements IOCallback {
 		// Check if the player is already blocked or not
 		if(this.blocked.contains(lower)) {
 			// Notify that they are already blocked
-			this.plugin.send(ColorScheme.RED_DARKRED, "{1}You have already blocked '{2}" + name + "{1}'!", this.player);
+			Chat.send(ColorScheme.RED_DARKRED, "{1}You have already blocked '{2}" + name + "{1}'!", this.player);
 		} else {
 			// Block the player name
 			this.blocked.add(lower);
@@ -114,7 +114,7 @@ class Chatter implements IOCallback {
 			MySQL.execute(this, "block", q);
 			
 			// Notify that the player is now blocked
-			this.plugin.send(ColorScheme.GRAY_DARKDRAY, "{1}You have blocked '{2}" + name + "{1}'!", this.player);
+			Chat.send(ColorScheme.GRAY_DARKDRAY, "{1}You have blocked '{2}" + name + "{1}'!", this.player);
 		}
 	}
 	
@@ -125,7 +125,7 @@ class Chatter implements IOCallback {
 		// Check if the player is already blocked or not
 		if(!this.blocked.contains(lower)) {
 			// Notify that they are not blocked
-			this.plugin.send(ColorScheme.RED_DARKRED, "{1}You have not yet blocked '{2}" + name + "{1}'!", this.player);
+			Chat.send(ColorScheme.RED_DARKRED, "{1}You have not yet blocked '{2}" + name + "{1}'!", this.player);
 		} else {
 			// Unblock the player name
 			this.blocked.remove(lower);
@@ -139,7 +139,7 @@ class Chatter implements IOCallback {
 			MySQL.execute(this, "block", q);
 			
 			// Notify that the player is now unblocked
-			this.plugin.send(ColorScheme.GRAY_DARKDRAY, "{1}You have unblocked '{2}" + name + "{1}'!", this.player);
+			Chat.send(ColorScheme.GRAY_DARKDRAY, "{1}You have unblocked '{2}" + name + "{1}'!", this.player);
 		}
 	}
 	
@@ -147,21 +147,21 @@ class Chatter implements IOCallback {
 		// check if the player's chat data is loaded yet
 		if(!this.loaded) {
 			// Notify the player they cannot speak yet
-			this.plugin.send(ColorScheme.RED_DARKRED, "{1}You cannot speak at this time, please wait!", this.player);
+			Chat.send(ColorScheme.RED_DARKRED, "{1}You cannot speak at this time, please wait!", this.player);
 			return null;
 		}
 		
 		// Check if the player is muted
 		if(this.muted) {
 			// Notify the player they are currently muted
-			this.plugin.send(ColorScheme.RED_DARKRED, "{1}You have been {2}muted{1} and cannot speak right now!", this.player);
+			Chat.send(ColorScheme.RED_DARKRED, "{1}You have been {2}muted{1} and cannot speak right now!", this.player);
 			return null;
 		}
 		
 		// Check if player sent a message recently
 		if(System.currentTimeMillis() - this.lastSent < 2000 && !this.player.isOp()) {
 			// Notify the player they cannot chat that often
-			this.plugin.send(ColorScheme.RED_DARKRED, "{1}You cannot send messages that quickly!", this.player);
+			Chat.send(ColorScheme.RED_DARKRED, "{1}You cannot send messages that quickly!", this.player);
 			return null;
 		}
 		

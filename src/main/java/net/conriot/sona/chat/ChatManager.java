@@ -36,10 +36,10 @@ class ChatManager implements Listener, IOCallback {
 			// Set the chat to silent mode
 			this.silenced = true;
 			// Notify all that the server is in silent mode
-			this.plugin.sendAll(ColorScheme.RED_DARKRED, "{1}The server is now in {2}silent {1}mode! Chat is {2}disabled{1}!");
+			Chat.sendAll(ColorScheme.RED_DARKRED, "{1}The server is now in {2}silent {1}mode! Chat is {2}disabled{1}!");
 		} else {
 			// Notify the server is already in silent mode
-			this.plugin.send(ColorScheme.RED_DARKRED, "{1}The server is already in {2}silent {1}mode!", sender);
+			Chat.send(ColorScheme.RED_DARKRED, "{1}The server is already in {2}silent {1}mode!", sender);
 		}
 	}
 	
@@ -48,10 +48,10 @@ class ChatManager implements Listener, IOCallback {
 			// Set the chat to no longer be in silent mode
 			this.silenced = false;
 			// Notify all that the server is no longer in silent mode
-			this.plugin.sendAll(ColorScheme.GREEN_DARKGREEN, "{1}The server is no longer in {2}silent {1}mode! Chat is {2}enabled{1}!");
+			Chat.sendAll(ColorScheme.GREEN_DARKGREEN, "{1}The server is no longer in {2}silent {1}mode! Chat is {2}enabled{1}!");
 		} else {
 			// Notify the server is already out of silent mode
-			this.plugin.send(ColorScheme.RED_DARKRED, "{1}The server is already out of {2}silent {1}mode!", sender);
+			Chat.send(ColorScheme.RED_DARKRED, "{1}The server is already out of {2}silent {1}mode!", sender);
 		}
 	}
 	
@@ -101,7 +101,7 @@ class ChatManager implements Listener, IOCallback {
 				chatter.block(player.getName());
 			} else {
 				// Notify that nobody by that name is online
-				this.plugin.send(ColorScheme.RED_DARKRED, "{1}There is nobody online named '{2}" + target + "{1}'!", sender);
+				Chat.send(ColorScheme.RED_DARKRED, "{1}There is nobody online named '{2}" + target + "{1}'!", sender);
 			}
 		}
 		
@@ -144,7 +144,7 @@ class ChatManager implements Listener, IOCallback {
 				from.setLastPM(player);
 		} else {
 			// Notify that the target of the message is offline
-			this.plugin.send(ColorScheme.RED_DARKRED, "{1}The player '{2}" + target + "{1}' is not online!", sender);
+			Chat.send(ColorScheme.RED_DARKRED, "{1}The player '{2}" + target + "{1}' is not online!", sender);
 		}
 	}
 	
@@ -163,11 +163,11 @@ class ChatManager implements Listener, IOCallback {
 				to.message(sender, message);
 			} else {
 				// Notify that the target of the message is offline
-				this.plugin.send(ColorScheme.RED_DARKRED, "{1}The player '{2}" + player.getName() + "{1}' is not online!", sender);
+				Chat.send(ColorScheme.RED_DARKRED, "{1}The player '{2}" + player.getName() + "{1}' is not online!", sender);
 			}
 		} else {
 			// Notify that there is nobody to reply to
-			this.plugin.send(ColorScheme.RED_DARKRED, "{1}There is nobody to reply to!", sender);
+			Chat.send(ColorScheme.RED_DARKRED, "{1}There is nobody to reply to!", sender);
 		}
 	}
 	
@@ -177,7 +177,7 @@ class ChatManager implements Listener, IOCallback {
 		if(chatter != null) {
 			// Verify that the chat is not currently silenced
 			if(!sender.isOp() && this.silenced) {
-				this.plugin.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You can't talk right now!", sender);
+				Chat.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You can't talk right now!", sender);
 				return;
 			}
 			
@@ -206,7 +206,7 @@ class ChatManager implements Listener, IOCallback {
 		if(chatter != null) {
 			// Verify that the chat is not currently silenced
 			if(!sender.isOp() && this.silenced) {
-				this.plugin.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You can't talk right now!", sender);
+				Chat.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You can't talk right now!", sender);
 				return;
 			}
 			
@@ -263,7 +263,7 @@ class ChatManager implements Listener, IOCallback {
 		if(chatter != null) {
 			// Verify that the chat is not currently silenced
 			if(!player.isOp() && this.silenced) {
-				this.plugin.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You can't talk right now!", player);
+				Chat.send(ColorScheme.RED_DARKRED, "{1}An {2}admin{1} has put chat into {2}silent mode{1}! You can't talk right now!", player);
 				return;
 			}
 			
