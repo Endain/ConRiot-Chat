@@ -14,7 +14,10 @@ public enum ColorScheme {
 	YELLOW_GOLD(ChatColor.YELLOW, ChatColor.GOLD, null),
 	GRAY_DARKDRAY(ChatColor.GRAY, ChatColor.DARK_GRAY, null),
 	// Three color schemes
-	GRAY_WHITE_AQUA(ChatColor.GRAY, ChatColor.WHITE, ChatColor.AQUA);
+	GRAY_WHITE_AQUA(ChatColor.GRAY, ChatColor.WHITE, ChatColor.AQUA),
+	DARKGRAY_WHITE_AQUA(ChatColor.DARK_GRAY, ChatColor.WHITE, ChatColor.AQUA),
+	DARKGRAY_GRAY_AQUA(ChatColor.DARK_GRAY, ChatColor.GRAY, ChatColor.AQUA),
+	WHITE_RED_DARKRED(ChatColor.WHITE, ChatColor.RED, ChatColor.DARK_RED);
 
 	private ChatColor primary;
 	private ChatColor secondary;
