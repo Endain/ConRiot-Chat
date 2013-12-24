@@ -9,6 +9,7 @@ import net.conriot.sona.mysql.IOCallback;
 import net.conriot.sona.mysql.MySQL;
 import net.conriot.sona.mysql.Query;
 import net.conriot.sona.mysql.Result;
+import net.conriot.sona.permissions.Permissions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -267,12 +268,29 @@ class Chatter implements IOCallback {
 			prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + ChatColor.BOLD + "Owner" + ChatColor.GRAY + "] ";
 			prefix += ChatColor.DARK_RED + this.player.getName() + ChatColor.DARK_GRAY + " : " + ChatColor.RED;
 		} else {
-			prefix = ChatColor.GRAY + "[" + ChatColor.BLUE + "Inmate" + ChatColor.GRAY + "] ";
+			prefix = ChatColor.GRAY + "[" + ChatColor.BLUE + "Inmate" + ChatColor.DARK_GRAY + " | ";
+			prefix += getPrisonerBlock() + ChatColor.GRAY + " ] ";
 			prefix += ChatColor.YELLOW + this.player.getName() + ChatColor.DARK_GRAY + " : " + ChatColor.GRAY;
 		}
 		
 		// Return the prefix
 		return prefix;
+	}
+	
+	private String getPrisonerBlock() {
+		if(Permissions.hasPerm(this.player, "block.f"))
+			return ChatColor.GRAY + "F";
+		else if(Permissions.hasPerm(this.player, "block.e"))
+			return ChatColor.GRAY + "E";
+		else if(Permissions.hasPerm(this.player, "block.d"))
+			return ChatColor.YELLOW + "D";
+		else if(Permissions.hasPerm(this.player, "block.c"))
+			return ChatColor.YELLOW + "C";
+		else if(Permissions.hasPerm(this.player, "block.b"))
+			return ChatColor.GOLD + "B";
+		else if(Permissions.hasPerm(this.player, "block.a"))
+			return ChatColor.GOLD + "A";
+		return ChatColor.WHITE + "X";
 	}
 	
 	private void load() {
