@@ -268,8 +268,7 @@ class Chatter implements IOCallback {
 			prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + ChatColor.BOLD + "Owner" + ChatColor.GRAY + "] ";
 			prefix += ChatColor.DARK_RED + this.player.getName() + ChatColor.DARK_GRAY + " : " + ChatColor.RED;
 		} else {
-			prefix = ChatColor.GRAY + "[" + ChatColor.BLUE + "Inmate" + ChatColor.DARK_GRAY + " | ";
-			prefix += getPrisonerBlock() + ChatColor.GRAY + " ] ";
+			prefix = ChatColor.GRAY + "[" + getPrisonerLevel() + ChatColor.GRAY + "] ";
 			prefix += ChatColor.YELLOW + this.player.getName() + ChatColor.DARK_GRAY + " : " + ChatColor.GRAY;
 		}
 		
@@ -277,20 +276,22 @@ class Chatter implements IOCallback {
 		return prefix;
 	}
 	
-	private String getPrisonerBlock() {
-		if(Permissions.hasPerm(this.player, "block.f"))
-			return ChatColor.GRAY + "F";
-		else if(Permissions.hasPerm(this.player, "block.e"))
-			return ChatColor.GRAY + "E";
-		else if(Permissions.hasPerm(this.player, "block.d"))
-			return ChatColor.YELLOW + "D";
-		else if(Permissions.hasPerm(this.player, "block.c"))
-			return ChatColor.YELLOW + "C";
-		else if(Permissions.hasPerm(this.player, "block.b"))
-			return ChatColor.GOLD + "B";
-		else if(Permissions.hasPerm(this.player, "block.a"))
-			return ChatColor.GOLD + "A";
-		return ChatColor.WHITE + "X";
+	private String getPrisonerLevel() {
+		if(Permissions.hasPerm(this.player, "level.7"))
+			return "" + ChatColor.GOLD + ChatColor.BOLD + "L7";
+		else if(Permissions.hasPerm(this.player, "level.6"))
+			return "" + ChatColor.YELLOW + ChatColor.BOLD + "L6";
+		else if(Permissions.hasPerm(this.player, "level.5"))
+			return "" + ChatColor.YELLOW + ChatColor.BOLD + "L5";
+		else if(Permissions.hasPerm(this.player, "level.4"))
+			return "" + ChatColor.YELLOW + ChatColor.BOLD + "L4";
+		else if(Permissions.hasPerm(this.player, "level.3"))
+			return "" + ChatColor.WHITE + ChatColor.BOLD + "L3";
+		else if(Permissions.hasPerm(this.player, "level.2"))
+			return "" + ChatColor.WHITE + ChatColor.BOLD + "L2";
+		else if(Permissions.hasPerm(this.player, "level.1"))
+			return "" + ChatColor.WHITE + ChatColor.BOLD + "L1";
+		return "" + ChatColor.BLACK + ChatColor.BOLD + "XX";
 	}
 	
 	private void load() {
